@@ -29,12 +29,13 @@ func mutate(population []ChessBoard, rate float64) {
 
 func mutation(board ChessBoard) ChessBoard {
 	// Clonar el tablero original para realizar la mutación
-	mutatedBoard := make(ChessBoard, len(board))
+	size := len(board)
+	mutatedBoard := make(ChessBoard, size)
 	copy(mutatedBoard, board)
 
 	// Seleccionar dos posiciones aleatorias en el tablero para intercambiar las reinas
-	position1 := rand.Intn(len(board))
-	position2 := rand.Intn(len(board))
+	position1 := rand.Intn(size)
+	position2 := rand.Intn(size)
 
 	// Intercambiar las reinas en las dos posiciones seleccionadas
 	mutatedBoard[position1], mutatedBoard[position2] = mutatedBoard[position2], mutatedBoard[position1]

@@ -62,12 +62,12 @@ func init() {
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-	rootCmd.PersistentFlags().UintP("max-iterations", "i", 1000, "Maximum number of iterations")
-	rootCmd.PersistentFlags().UintP("population-size", "p", 100, "Population size")
+	rootCmd.PersistentFlags().UintP("max-iterations", "i", 100, "Maximum number of iterations")
+	rootCmd.PersistentFlags().UintP("population-size", "p", 10, "Population size")
 	rootCmd.PersistentFlags().Float64P("crossover-rate", "c", 0.8, "Crossover rate")
 	rootCmd.PersistentFlags().Float64P("mutation-rate", "m", 0.01, "Mutation rate")
 	rootCmd.PersistentFlags().StringP("selection-method", "s", "roulette", "Selection method")
-	rootCmd.PersistentFlags().BoolP("elitism", "e", true, "Enable elitism")
+	rootCmd.PersistentFlags().BoolP("elitism", "e", false, "Enable elitism")
 
 	// Bind flags to viper
 	viper.BindPFlag("max-iterations", rootCmd.PersistentFlags().Lookup("max-iterations"))

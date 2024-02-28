@@ -65,7 +65,8 @@ func calculateFitness(board ChessBoard) int {
 		}
 	}
 	// La aptitud es inversamente proporcional al número de colisiones, es decir, menos colisiones significa mayor aptitud
-	return len(board)*(len(board)-1)/2 - fitness
+	// return len(board)*(len(board)-1)/2 - fitness
+	return fitness
 }
 
 // Aplica el operador de cruce a la población de tableros de ajedrez.
@@ -76,8 +77,8 @@ func crossover(parents []ChessBoard, rate float64, algorithm string) []ChessBoar
 		if rand.Float64() < rate {
 			// Si elige cruzarse, se aplica el cruce según el algoritmo especificado
 			switch algorithm {
-			case "PMX":
-				offspring = append(offspring, PMXCrossover(parents[i], parents[i+1]))
+			case "PMX", "pmx":
+				offspring = append(offspring, PMX(parents[i], parents[i+1]))
 			// Agrega otros casos de algoritmos de cruce aquí según sea necesario
 			default:
 				fmt.Println("Algoritmo de cruce no válido")
@@ -98,30 +99,7 @@ func applyElitism(population []ChessBoard, elites []ChessBoard) {
 	copy(population, elites)
 }
 
-// Verifica si se ha encontrado una solución al problema de las N reinas.
-func hasSolution(population []ChessBoard) bool {
-	for _, board := range population {
-		if isSolution(board) {
-			return true
-		}
-	}
-	return false
-}
-
-// Función auxiliar para verificar si un tablero de ajedrez es una solución válida
-func isSolution(board ChessBoard) bool {
-	for i := 0; i < len(board); i++ {
-		for j := i + 1; j < len(board); j++ {
-			// Si dos reinas comparten la misma fila, columna o diagonal, no es una solución
-			if board[i] == board[j] || AbsInt(int(board[i])-int(board[j])) == j-i {
-				return false
-			}
-		}
-	}
-	return true
-}
-
-func NQueens(n uint, maxIterations uint, populationSize uint, crossoverRate float64, mutationRate float64, selectionMethod string, elitism bool, crossoverAlgorithm string) {
+func NQueens(n uint, maxIterations uint, populationSize uint, crossoverRate float64, mutationRate float64, selectionMethod string, elitism bool, crossoverAlgorithm string) (ChessBoard, int) {
 	// Lógica para resolver el problema de las N reinas
 	fmt.Println("Running N Queens problem with the following parameters:")
 	fmt.Printf("Number of Queens: %d\n", n)
@@ -136,12 +114,26 @@ func NQueens(n uint, maxIterations uint, populationSize uint, crossoverRate floa
 	// Inicialización de la población
 	population := initializePopulation(n, populationSize)
 
+	// Inicialización del mejor tablero y su puntuación de aptitud
+	bestBoard := ChessBoard{}
+	bestFitness := int(n * (n - 1) / 2)
+
 	// Iterar hasta alcanzar el número máximo de iteraciones
 	for iteration := uint(0); iteration < maxIterations; iteration++ {
+		fmt.Printf("Iteration: %d", iteration)
 		// Iterar sobre cada individuo de la población
 		for _, individual := range population {
 			// Calcular la puntuación de aptitud (fitness) para el individuo
-			calculateFitness(individual)
+			fitness := calculateFitness(individual)
+			if fitness == 0 {
+				fmt.Println("Solution found!")
+				return individual, fitness
+			}
+			// Actualizar el mejor tablero y su puntuación de aptitud si es necesario
+			if fitness < bestFitness {
+				bestBoard = individual
+				bestFitness = fitness
+			}
 		}
 
 		// Seleccionar individuos para la reproducción
@@ -161,11 +153,7 @@ func NQueens(n uint, maxIterations uint, populationSize uint, crossoverRate floa
 			applyElitism(population, selectedParents)
 		}
 
-		// Verificar si se ha encontrado una solución
-		if hasSolution(population) {
-			fmt.Println("Solution found!")
-			break
-		}
 	}
-
+	// Devolver el mejor tablero encontrado
+	return bestBoard, bestFitness
 }
