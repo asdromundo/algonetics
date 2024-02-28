@@ -29,13 +29,12 @@ var cfgFile string
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "algonetics",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Short: "CLI for testing, profiling and reporting genetic algorithms implementations in Go(lang).",
+	Long: `
+algonetics is a command-line interface (CLI) tool designed for testing, profiling, and reporting genetic algorithms implementations in the Go programming language. This tool empowers researchers, developers, and enthusiasts to experiment with various genetic algorithm configurations, including selection strategies, crossover techniques, and mutation rates, providing insights into their performance and effectiveness across different problem domains.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+By leveraging the power of Go(lang) concurrency and the flexibility of the Cobra library, algonetics offers a seamless and efficient environment for analyzing genetic algorithms, enabling users to tackle optimization problems with ease.
+	`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -62,6 +61,21 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	rootCmd.PersistentFlags().UintP("max-iterations", "i", 1000, "Maximum number of iterations")
+	rootCmd.PersistentFlags().UintP("population-size", "p", 100, "Population size")
+	rootCmd.PersistentFlags().Float64P("crossover-rate", "c", 0.8, "Crossover rate")
+	rootCmd.PersistentFlags().Float64P("mutation-rate", "m", 0.01, "Mutation rate")
+	rootCmd.PersistentFlags().StringP("selection-method", "s", "roulette", "Selection method")
+	rootCmd.PersistentFlags().BoolP("elitism", "e", true, "Enable elitism")
+
+	// Bind flags to viper
+	viper.BindPFlag("max-iterations", rootCmd.PersistentFlags().Lookup("max-iterations"))
+	viper.BindPFlag("population-size", rootCmd.PersistentFlags().Lookup("population-size"))
+	viper.BindPFlag("crossover-rate", rootCmd.PersistentFlags().Lookup("crossover-rate"))
+	viper.BindPFlag("mutation-rate", rootCmd.PersistentFlags().Lookup("mutation-rate"))
+	viper.BindPFlag("selection-method", rootCmd.PersistentFlags().Lookup("selection-method"))
+	viper.BindPFlag("elitism", rootCmd.PersistentFlags().Lookup("elitism"))
 }
 
 // initConfig reads in config file and ENV variables if set.
