@@ -32,10 +32,12 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// nqueensCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	solveCmd.Flags().UintP("number-queens", "n", 8, "Positive integer representing the number of queens.")
 	solveCmd.Flags().StringP("crossover-algorithm", "c", "pmx", "Crossover algorithm to use (pmx, ipmx, opmx)")
 }
 
 func runGeneticAlgorithm() {
+	numberQueens, _ := rootCmd.PersistentFlags().GetUint("number-queens")
 	// Leer configuraciones de las banderas globales
 	maxIterations, _ := rootCmd.PersistentFlags().GetUint("max-iterations")
 	populationSize, _ := rootCmd.PersistentFlags().GetUint("population-size")
@@ -48,5 +50,5 @@ func runGeneticAlgorithm() {
 	// Ejecutar el algoritmo genético con las configuraciones proporcionadas
 	// Aquí puedes llamar a la función que implementa el algoritmo de las reinas n
 	// Pasando las configuraciones como parámetros
-	genetic_algorithms.NQueens(maxIterations, populationSize, crossoverRate, mutationRate, selectionMethod, elitism, crossoverAlgorithm)
+	genetic_algorithms.NQueens(numberQueens, maxIterations, populationSize, crossoverRate, mutationRate, selectionMethod, elitism, crossoverAlgorithm)
 }
